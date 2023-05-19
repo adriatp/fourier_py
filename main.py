@@ -1,4 +1,5 @@
 import wave
+import numpy
 
 wav_basepath = '/mnt/c/Users/adria/Documents/Enregistraments de so/'
 wav_filename = 'Enregistrament.wav'

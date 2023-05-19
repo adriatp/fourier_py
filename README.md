@@ -28,6 +28,18 @@ python3 -m venv env
 source env/bin/activate
 ```
 
+#### Get requeriments
+
+```bash
+pip3 install -r requirements.txt
+```
+
+#### Set requeriments
+
+```bash
+pip3 freeze > requirements.txt
+```
+
 ### Push changes to origin
 
 ```bash

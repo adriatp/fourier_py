@@ -1,4 +1,4 @@
-#!/home/atp/adriatp/env/bin/python3
+#!/home/atp/adriatp/fourier_py/env/bin/python3
 # -*- coding: utf-8 -*-
 import re
 import sys

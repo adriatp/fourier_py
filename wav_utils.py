@@ -36,12 +36,24 @@ def get_audio_data_from_wav_file(wav_filepath):
 def set_byte_data_from_int_data(audio_data):
     # [C1_1,C1_2,C1_3] i [C2_1,C2_2,C2_3] => [[C1_1,C2_1],[C1_2,C2_2],[C1_3,C2_3]...] 
     zip_by_channel = list(zip(*audio_data['int_frames_by_channel']))
-    # [[C1_1,C2_1],[C1_2,C2_2],[C1_3,C2_3]...] => [C1_1,C2_1,C1_2,C2_2,C1_3,C2_3]
+    # [[C1_1,C2_1],[C1_2,C2_2],[C1_3,C2_3]...] => [C1_1,C2_1,C1_2,C2_2,C1_3,C2_3,...]
     int_frames_all_list = [x for z in zip_by_channel for x in z]
-    # [[C1_1,C2_1],[C1_2,C2_2],[C1_3,C2_3]...] => NP_ARRAY INT16
-    audio_data['int_frames_all'] = np.array(int_frames_all_list, dtype=np.int16)
+    # [C1_1,C2_1,C1_2,C2_2,C1_3,C2_3,...] => NP_ARRAY INT16
+    audio_data['int_frames_all'] = np.array(int_frames_all_list, dtype=np.int16).astype('<i2')
     # NP_ARRAY INT16 => NP_BYTES LITTLE_ENDIAN (INT16: CHUNKS OF 2 BYTES)
-    audio_data['byte_frames_all'] = audio_data['int_frames_all'].tobytes(order='little')
+    audio_data['byte_frames_all'] = audio_data['int_frames_all'].tobytes()
+
+
+# Audio data must has 'int_frames_by_channel' property
+def create_wav_file(audio_data, wav_filepath):
+
+    # Open the WAV file in write mode
+    with wave.open(wav_filepath, 'w') as file:
+        file.setnchannels(audio_data['num_channels'])
+        file.setsampwidth(audio_data['sample_width'])
+        file.setframerate(audio_data['frame_rate'])
+        file.writeframes(audio_data['byte_frames_all'])
+
 
 
 def print_audio_data(audio_data, img_basepath):
@@ -69,38 +81,6 @@ def print_audio_data(audio_data, img_basepath):
         # Save image as png
         img_filepath = img_basepath + f"out_ch_{i}.png"
         plt.savefig(img_filepath)
-
-
-
-# Audio data must has 'int_frames_by_channel' property
-def create_wav_file(audio_data, wav_filepath):
-    
-    # Open the WAV file in write mode
-    with wave.open(wav_filepath, 'w') as file:
-
-        file.setnchannels(audio_data['num_channels'])
-        file.setsampwidth(audio_data['sample_width'])
-        file.setframerate(audio_data['frame_rate'])
-
-        for i in range(audio_data['num_channels']):
-            
-            print(f"> echoing channel {i}")
-            
-            num_samples = audio_data['int_frames_by_channel'][i] / audio_data['sample_width']
-            samples = []
-            for j in range(num_samples):
-                
-            
-
-        samples = []
-        for i in range(num_samples):
-            sample_value = int(amplitude * math.sin(2 * math.pi * tone_frequency * i / samples_per_second))
-            adjusted_sample_value = sample_value + amplitude  # shift to be positive
-            samples.append(adjusted_sample_value.to_bytes(2, 'little'))  # Convert to bytes
-        
-        # Write the samples to the WAV file
-        file.writeframes(b''.join(samples))
-
 
 
 

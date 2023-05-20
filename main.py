@@ -1,20 +1,13 @@
 import wave
-import numpy
+import numpy as np
+import matplotlib.pyplot as plt
+import os
+import pdb
 
-wav_basepath = '/mnt/c/Users/adria/Documents/Enregistraments de so/'
-wav_filename = 'Enregistrament.wav'
+from wav_utils import *
 
-# Abrir el archivo .wav en modo lectura
-with wave.open(wav_basepath + wav_filename, 'rb') as wav_file:
+wav_in_filepath = f"{os.getcwd()}/in/audio_test.wav"
+audio_data = get_audio_data_from_wav_file(wav_in_filepath)
 
-    # Obtener información del archivo .wav
-    num_channels = wav_file.getnchannels()
-    sample_width = wav_file.getsampwidth()
-    frame_rate = wav_file.getframerate()
-    num_frames = wav_file.getnframes()
-
-    # Leer los datos del archivo .wav
-    wav_data = wav_file.readframes(num_frames)
-
-# Hacer algo con los datos...
-print(wav_data)
+img_out_basepath = f"{os.getcwd()}/out/images/"
+print_audio_data(audio_data, img_out_basepath)

@@ -39,7 +39,7 @@ def set_byte_data_from_int_data(audio_data):
     # [[C1_1,C2_1],[C1_2,C2_2],[C1_3,C2_3]...] => [C1_1,C2_1,C1_2,C2_2,C1_3,C2_3,...]
     int_frames_all_list = [x for z in zip_by_channel for x in z]
     # [C1_1,C2_1,C1_2,C2_2,C1_3,C2_3,...] => NP_ARRAY INT16
-    audio_data['int_frames_all'] = np.array(int_frames_all_list, dtype=np.int16).astype('<i2')
+    audio_data['int_frames_all'] = np.array(int_frames_all_list, dtype=np.int16).astype(f"<i{audio_data['sample_width']}")
     # NP_ARRAY INT16 => NP_BYTES LITTLE_ENDIAN (INT16: CHUNKS OF 2 BYTES)
     audio_data['byte_frames_all'] = audio_data['int_frames_all'].tobytes()
 
@@ -81,9 +81,23 @@ def print_audio_data(audio_data, img_basepath):
         # Save image as png
         img_filepath = img_basepath + f"out_ch_{i}.png"
         plt.savefig(img_filepath)
+        plt.clf()
 
 
+def note_frequency(note, octave=0):
+    std_freq = {
+        'c': 261.63,
+        'd': 293.66,
+        'e': 329.63,
+        'f': 349.23,
+        'g': 392.00,
+        'a': 440.00,
+        'b': 493.88
+    }
+    return std_freq['note'] * (2**octave)
 
+
+"""
 def create_wav_file_2(file_name, num_channels, samples_per_second, duration_seconds, tone_frequency):
     # Calculate the total number of samples
     num_samples = samples_per_second * duration_seconds
@@ -168,3 +182,5 @@ note_frequency = {
 
 # Example usage:
 # create_wav_file("out/audio.wav", 2, 44100, 5, note_frequency['G2'])
+
+"""
